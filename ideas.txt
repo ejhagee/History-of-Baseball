@@ -1,9 +1,0 @@
-Graphs:
-- Team Win Prct vs. Year (indicate playoffs/championships on tooltip (function))
-- Only active teams searchable
-- All teams win percentage plotted
-- Change colors (need to find reference for this)
-- Team Accolades 
-- Hitting Leaders (selectable [H, K, HR, AVG, SLG, ?OBP, ?OPS])
-- Pitching Leaders (selectable [ERA, IP, K, W, ?LowAVG, ?LowSLG])
-- Awards (Golden Glove, Silver Slugger, MVP)
