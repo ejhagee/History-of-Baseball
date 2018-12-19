@@ -32,7 +32,7 @@ conn = engine.connect()
 # 3. Set Up Flask
 ##################################################
 
-app = Flask(__name__)
+app = Flask(__name__, static_url_path = '')
 
 ###################################################
 # 4. Flask Routes
