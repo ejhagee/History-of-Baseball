@@ -23,7 +23,14 @@ import pandas as pd
 
 #create engine
 # TO DO: Set up format for arbitrary name/host/password
-engine = create_engine('mysql://root@localhost/lahman2016')
+passwd = ''
+
+if (passwd != ''):
+    passphrase = ':' + passwd
+else:
+    passphrase = ''
+
+engine = create_engine(f'mysql://root{passphrase}@localhost/lahman2016')
 
 # create a connection
 conn = engine.connect()
@@ -97,10 +104,10 @@ def winpct():
     #return jsonifyed list
     return jsonify(teams)
 
-# route to get individual team records
+""" # route to get individual team records
 @app.route("/teams/<team>")
 def teamRecord(team):
-    """Return historical winning percentages of selected team."""
+    """"""Return historical winning percentages of selected team.""""""
     #Create statement
     statement = f"SELECT Teams.yearID AS `Year`, Teams.lgID AS `League`, \
         Teams.franchID AS `FranchiseID`, Teams.divID AS `Division`, Teams.W AS `W`, Teams.L AS `L`, \
@@ -150,7 +157,7 @@ def teamRecord(team):
         teams.append(team)
 
     #return jsonifyed list
-    return jsonify(teams)
+    return jsonify(teams) """
 
 #route to get batting stats
 @app.route("/batting/<team>/<bat_stat>")
