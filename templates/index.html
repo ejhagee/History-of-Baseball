@@ -11,6 +11,9 @@
     <meta name="description" content="">
     <meta name="author" content="">
 
+    <!-- Plottable CSS-->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/plottable.js/3.8.3/plottable.min.css">
+
     <!-- Custom styles for this template -->
     <link href="{{ url_for('static',  filename = 'css/1-col-portfolio.css') }}" rel="stylesheet">
 
@@ -33,13 +36,13 @@
               </a>
             </li>
             <li class="nav-item">
-              <a class="nav-link" href="#section-one">Section 1</a>
+              <a class="nav-link" href="#chart-1">Performance</a>
             </li>
             <li class="nav-item">
-              <a class="nav-link" href="#section-two">Section 2</a>
+              <a class="nav-link" href="#chart-2">Batting</a>
             </li>
             <li class="nav-item">
-              <a class="nav-link" href="#section-three">Section 3</a>
+              <a class="nav-link" href="#chart-3">Pitching</a>
             </li>
           </ul>
         </div>
@@ -55,20 +58,25 @@
       <!-- Project One -->
 
       <div class="row">
-        <h1 id="section-one">Section One</h1>
+        <h1 id="section-one">Historical Performance</h1>
+        <select id="selTeam" onchange="teamChanged(this.value)"></select>
+        <br>
         <div class="col-md-12">
-          <a href="#">
-            <img class="img-fluid rounded mb-3 mb-md-0" src="http://placehold.it/700x300" alt="">
-          </a>
+            <a href="#">
+            <div id = "chart-1"></div>
+            </a>
         </div>
       </div>
 
+      <br>
+
       <!-- Project Two -->
       <div class="row">
-        <h1 id="section-two">Section Two</h1>
+        <h1 id="section-two">Batting Leaders</h1>
+        <select id="selBatStat" onchange="batChanged(this.value)"></select>
         <div class="col-md-12">
-          <a href="#">
-            <img class="img-fluid rounded mb-3 mb-md-0" src="http://placehold.it/700x300" alt="">
+          <a href = "#">
+            <div id="chart-2"></div>
           </a>
         </div>
       </div>
@@ -78,10 +86,11 @@
 
       <!-- Project Three -->
       <div class="row">
-        <h1 id="section-three">Section Three</h1>
+        <h1 id="section-three">Pitching Leaders</h1>
+        <select id="selPitchStat" onchange="pitchChanged(this.value)"></select>
         <div class="col-md-12">
-          <a href="#">
-            <img class="img-fluid rounded mb-3 mb-md-0" src="http://placehold.it/700x300" alt="">
+          <a href = "#">
+            <div id="chart-3"></div>
           </a>
         </div>
       </div>
@@ -102,6 +111,13 @@
       </div>
       <!-- /.container -->
     </footer>
+
+    <!-- Javascript to create charts.-->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/5.5.0/d3.js"></script>
+    <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+    <script src="https://cdn.plot.ly/plotly-1.31.2.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/plottable.js/3.8.3/plottable.min.js"></script>
+    <script src="{{ url_for('static', filename='js/app.js') }}"></script>
 
     <!-- Bootstrap core JavaScript -->
     <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>

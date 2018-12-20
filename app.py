@@ -55,7 +55,9 @@ def winpct():
                 Teams.W AS `W`, Teams.L AS `L`, Teams.DivWin AS `WinDiv`, \
                 Teams.WCWin AS `WinWC`, Teams.LgWin AS `WinLeague`, \
                 Teams.WSWin AS `WinWS`, Teams.name AS `Name`, \
-                teamsfranchises.franchName AS `FranchiseName` \
+                teamsfranchises.franchName AS `FranchiseName`, \
+                teamsfranchises.color1 AS `Color1`, teamsfranchises.color2 AS `Color2`,\
+                teamsfranchises.color3 AS `Color3` \
                 FROM Teams LEFT JOIN teamsfranchises \
                 ON Teams.franchID = teamsfranchises.franchID;"
 
@@ -85,6 +87,9 @@ def winpct():
         team['Name'] = row.Name
         team['FranchiseName'] = row.FranchiseName
         team['WinPrct'] = row.WinPrct
+        team['Color1'] = row.Color1
+        team['Color2'] = row.Color2
+        team['Color3'] = row.Color3
 
         #add to list
         teams.append(team)
@@ -110,6 +115,13 @@ def teamRecord(team):
     #calculate winning percentages
     teamDf['WinPrct'] = teamDf['W']/(teamDf['W']+teamDf['L'])
 
+    #get franchise colors
+    stmt = f"SELECT teamsfranchises.color1 AS `Color1`, teamsfranchises.color2 AS `Color2`,\
+            teamsfranchises.color3 AS `Color3` FROM teamsfranchises \
+            WHERE teamsfranchises.franchID = '{team}';"
+
+    colors = pd.read_sql(stmt, conn)
+
     #create an empty list
     teams = []
 
@@ -130,6 +142,9 @@ def teamRecord(team):
         team['Name'] = row.Name
         team['FranchiseName'] = row.FranchiseName
         team['WinPrct'] = row.WinPrct
+        team['Color1'] = colors['Color1'][0]
+        team['Color2'] = colors['Color2'][0]
+        team['Color3'] = colors['Color3'][0]
 
         #add to list
         teams.append(team)
@@ -192,13 +207,11 @@ def batting(team, bat_stat):
     #reset index
     battingdf.reset_index(inplace = True)
 
-    #get out data of interest
-    batdata = battingdf.loc[:, ['PlayerName', bat_stat]]
-
     #sort data and take the top 10
+    batdata = battingdf.loc[:, ['PlayerName', bat_stat]]
     sorted_bat_data = batdata.sort_values(by = bat_stat, ascending = False)
     final_bat_data = sorted_bat_data.head(10)
-
+    
     #get franchise colors
     stmt = f"SELECT teamsfranchises.color1 AS `Color1`, teamsfranchises.color2 AS `Color2`,\
             teamsfranchises.color3 AS `Color3` FROM teamsfranchises \
@@ -206,17 +219,16 @@ def batting(team, bat_stat):
 
     colors = pd.read_sql(stmt, conn)
 
-    #create an empty list
-    players = []
+    #get out data of interest
+    data = {'PlayerName': final_bat_data.iloc[:,0].values.tolist(), 'Stat': final_bat_data.iloc[:,1].values.tolist()}
 
-    ##iterate through Df
-    for index, row in enumerate(final_bat_data.itertuples(), 1):
-        player = {"Player": row[1], f"{bat_stat}": row[2], "Color1": colors["Color1"][0],
-                    "Color2": colors["Color2"][0], "Color3": colors["Color3"][0]}
-        players.append(player)
+    #add color
+    data["Color1"] = colors["Color1"][0]
+    data["Color2"] = colors["Color2"][0]
+    data["Color3"] = colors["Color3"][0]
 
     #return jsonifyed list
-    return jsonify(players)
+    return jsonify(data)
 
 #route to get pitching stats
 @app.route("/pitching/<team>/<pitch_stat>")
@@ -255,7 +267,7 @@ def pitching(team, pitch_stat):
     groupedpitchDF = pd.DataFrame({"G": g, "GS": gs, "SV": sv, "IP": ip , "ER": er, "ERA": era, "SHO": sho,
                             "CG": cg, "BB": bb, "K": k, "BB_Rate": bbrate,"HR_Rate": hrrate})
 
-    #minimum 162 games
+    #minimum 200 IP
     pitchingdf = groupedpitchDF[groupedpitchDF["IP"] >= 200]
 
     #reset index
@@ -271,6 +283,9 @@ def pitching(team, pitch_stat):
     sorted_pitch_data = pitchdata.sort_values(by = pitch_stat, ascending = asc)
     final_pitch_data = sorted_pitch_data.head(10)
 
+    #get data of interest
+    data = {'PlayerName': final_pitch_data.iloc[:,0].values.tolist(), 'Stat': final_pitch_data.iloc[:,1].values.tolist()}
+
     #get franchise colors
     stmt = f"SELECT teamsfranchises.color1 AS `Color1`, teamsfranchises.color2 AS `Color2`,\
             teamsfranchises.color3 AS `Color3` FROM teamsfranchises \
@@ -278,17 +293,13 @@ def pitching(team, pitch_stat):
 
     colors = pd.read_sql(stmt, conn)
 
-    #create an empty list
-    players = []
-
-    ##iterate through Df
-    for index, row in enumerate(final_pitch_data.itertuples(), 1):
-        player = {"Player": row[1], f"{pitch_stat}": row[2], "Color1": colors["Color1"][0],
-                    "Color2": colors["Color2"][0], "Color3": colors["Color3"][0]}
-        players.append(player)
+    #add colors
+    data["Color1"] = colors["Color1"][0]
+    data["Color2"] = colors["Color2"][0]
+    data["Color3"] = colors["Color3"][0]
 
     #return jsonifyed list
-    return jsonify(players)
+    return jsonify(data)
 
 
 
